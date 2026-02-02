@@ -9,5 +9,16 @@ services:
       - 5432:5432
     volumes:
       - db-data:/var/lib/postgresql
+  graphql:
+    image: oven/bun:latest
+    # dev mode for now, later will make separate compose files
+    volumes:
+      - ./graphql-api:/app
+    working_dir: /app
+    command: ["bun", "run", "dev"]
+    ports:
+      - 4000:4000
+    depends_on:
+      - db
 volumes:
   db-data:

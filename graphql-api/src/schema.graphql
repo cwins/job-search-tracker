@@ -1,3 +1,8 @@
+type Query {
+    # get all jobs for now, add filtering later
+    getJobs: [Job!]!
+}
+
 type Job {
     id: ID!
     creationTime: Int!
