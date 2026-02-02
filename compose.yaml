@@ -1,16 +1,23 @@
 services:
   db:
     image: postgres:latest
+    restart: always
     environment:
-      - POSTGRES_USER=dummyuser
-      - POSTGRES_PASSWORD=dummypassword
-      - POSTGRES_DB=testdb_01
+      POSTGRES_USER: "dummyuser"
+      POSTGRES_PASSWORD: "dummypassword"
+      POSTGRES_DB: "testdb_01"
     ports:
       - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
     volumes:
       - db-data:/var/lib/postgresql
   graphql:
-    image: oven/bun:latest
+    image: oven/bun:alpine
     # dev mode for now, later will make separate compose files
     volumes:
       - ./graphql-api:/app
@@ -19,6 +26,7 @@ services:
     ports:
       - 4000:4000
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 volumes:
   db-data:

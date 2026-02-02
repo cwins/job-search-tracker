@@ -1,7 +1,9 @@
+import { relations } from 'drizzle-orm';
 import { jsonb, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 
 export const jobs = pgTable('jobs', {
     id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id').notNull(),
     creationTime: timestamp('creation_time').notNull().defaultNow(),
     company: varchar('company', { length: 255 }).notNull(),
     title: varchar('title', { length: 255 }).notNull(),
@@ -28,3 +30,14 @@ export const users = pgTable('users', {
     passwordHash: varchar('password_hash', { length: 255 }).notNull(),
     createdDate: timestamp('created_date').notNull().defaultNow(),
 });
+
+relations(jobs, ({ one }) => ({
+    user: one(users, {
+        fields: [jobs.userId],
+        references: [users.id],
+    }),
+}));
+
+relations(users, ({ many }) => ({
+    jobs: many(jobs),
+}));

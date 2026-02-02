@@ -1,4 +1,4 @@
-# postgressql-db
+# postgresql-db
 
 To install dependencies:
 

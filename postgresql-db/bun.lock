@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "postgressql-db",
+      "name": "postgresql-db",
       "dependencies": {
         "drizzle-orm": "^0.45.1",
         "pg": "^8.17.2",
