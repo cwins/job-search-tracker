@@ -1,0 +1,13 @@
+services:
+  db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=dummyuser
+      - POSTGRES_PASSWORD=dummypassword
+      - POSTGRES_DB=testdb_01
+    ports:
+      - 5432:5432
+    volumes:
+      - db-data:/var/lib/postgresql
+volumes:
+  db-data:

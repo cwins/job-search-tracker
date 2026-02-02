@@ -1,0 +1,35 @@
+type Job {
+    id: ID!
+    creationTime: Int!
+    company: String!
+    title: String!
+    location: String!
+    listingUrl: String!
+    listingDate: Int!
+    description: String!
+    notes: [Note!]!
+}
+
+type Note {
+    id: ID!
+    jobId: ID!
+    content: String!
+    timestamp: Int!
+}
+
+enum StatusEnum {
+    SAVED
+    APPLIED
+    CORRESPONDING
+    INTERVIEWING
+    OFFER_RECEIVED
+    OFFER_ACCEPTED
+    REJECTED
+    STALE
+    ARCHIVED
+}
+
+type Status {
+    date: Int!
+    status: StatusEnum!
+}
