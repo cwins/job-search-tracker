@@ -13,10 +13,12 @@
   },
   "dependencies": {
     "drizzle-orm": "^0.45.1",
+    "hono": "^4.11.7",
     "pg": "^8.17.2"
   },
   "scripts": {
+    "dev": "NODE_ENV=production bun --hot run index.ts",
     "drizzle:push": "drizzle-kit push --verbose",
-    "drizzle:studio": "drizzle-kit studio --host db --port 3000 --verbose"
+    "drizzle:studio": "drizzle-kit studio --port 3000 --verbose"
   }
 }

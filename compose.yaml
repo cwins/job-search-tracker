@@ -8,25 +8,52 @@ services:
       POSTGRES_DB: "testdb_01"
     ports:
       - 5432:5432
+    networks:
+      - default
+    volumes:
+      - db-data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
-      interval: 10s
+      interval: 30s
       timeout: 5s
       retries: 5
       start_period: 5s
+  db-access:
+    image: oven/bun:alpine
+    restart: always
+    working_dir: /app
+    command: ["bun", "run", "dev"]
+    environment:
+      POSTGRES_HOST: "db"
+    ports:
+      - 4001:4001
+    networks:
+      - default
     volumes:
-      - db-data:/var/lib/postgresql
+      - ./postgresql-db:/app
+    healthcheck:
+      test: ["CMD-SHELL", "bun run scripts/healthcheck.ts"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+      start_interval: 5s
+    depends_on:
+      db:
+        condition: service_healthy
   graphql:
     image: oven/bun:alpine
     # dev mode for now, later will make separate compose files
-    volumes:
-      - ./graphql-api:/app
     working_dir: /app
     command: ["bun", "run", "dev"]
     ports:
       - 4000:4000
+    networks:
+      - default
+    volumes:
+      - ./graphql-api:/app
     depends_on:
-      db:
+      db-access:
         condition: service_healthy
 volumes:
   db-data:

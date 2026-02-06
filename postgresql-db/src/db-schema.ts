@@ -1,5 +1,10 @@
 import { relations } from 'drizzle-orm';
-import { jsonb, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { jsonb, pgTable, text, timestamp, uuid, varchar, pgEnum } from 'drizzle-orm/pg-core';
+
+export const JobStatusValues = ['SAVED', 'APPLIED', 'CORRESPONDING', 'INTERVIEWING', 'OFFER_RECEIVED', 'OFFER_ACCEPTED', 'REJECTED', 'STALE', 'ARCHIVED'] as const;
+export type JobStatus = typeof JobStatusValues[number];
+
+export const statusEnum = pgEnum('status', [...JobStatusValues])
 
 export const jobs = pgTable('jobs', {
     id: uuid('id').primaryKey().defaultRandom(),
@@ -19,9 +24,9 @@ export const jobs = pgTable('jobs', {
     }>>().notNull().default([]),
     statusHistory: jsonb('status_history').$type<Array<{
         date: string;
-        status: 'SAVED' | 'APPLIED' | 'CORRESPONDING' | 'INTERVIEWING' | 'OFFER_RECEIVED' | 
-         'OFFER_ACCEPTED' | 'REJECTED' | 'STALE' | 'ARCHIVED';
+        status: JobStatus;
     }>>().notNull().default([]),
+    status: statusEnum()
 });
 
 export const users = pgTable('users', {
