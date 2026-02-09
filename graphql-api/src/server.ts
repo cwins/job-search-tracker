@@ -5,11 +5,21 @@ import { createYoga } from 'graphql-yoga';
 import { Hono } from 'hono';
 
 import resolvers from './resolvers';
+import type { ContextWithServices } from './types';
+import { JobsServicePostgreSQL } from './services/jobs/jobs-service-postgresql';
+
+const PORT = process.env.HTTP_PORT ? parseInt(process.env.HTTP_PORT) : 4000;
 
 export async function startServer() {
     const typeDefs = await loadSchema('src/schema.graphql', {
         loaders: [new GraphQLFileLoader()],
     });
+
+    const context: ContextWithServices = {
+        services: {
+            jobs: new JobsServicePostgreSQL()
+        }
+    };
 
     const app = new Hono();
     const yoga = createYoga({
@@ -17,13 +27,15 @@ export async function startServer() {
             typeDefs,
             resolvers
         }),
+        // add services to be used by resolvers
+        context
     });
 
     app.get('/graphql', async (ctx) => yoga.fetch(ctx.req.raw));
     app.post('/graphql', async (ctx) => yoga.fetch(ctx.req.raw));
 
     return {
-        port: 4000,
+        port: PORT,
         fetch: app.fetch
     }
 };

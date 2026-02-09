@@ -1,7 +1,15 @@
 type Query {
     # get all jobs for now, add filtering later
-    getJobs: [Job!]!
+    getJobs(userId: ID!, filters: JobsFilterInputs): [Job!]!
 }
+
+input JobsFilterInputs {
+    title: [String]
+    company: [String]
+    location: [String]
+    status: [StatusEnum]
+}
+
 
 type Job {
     id: ID!
@@ -13,13 +21,15 @@ type Job {
     listingDate: Int!
     description: String!
     notes: [Note!]!
+    statusHistory: [StatusChange!]!
+    status: StatusEnum!
 }
 
 type Note {
     id: ID!
     jobId: ID!
     content: String!
-    timestamp: Int!
+    timestamp: String!
 }
 
 enum StatusEnum {
@@ -34,7 +44,7 @@ enum StatusEnum {
     ARCHIVED
 }
 
-type Status {
-    date: Int!
+type StatusChange {
+    date: String!
     status: StatusEnum!
 }

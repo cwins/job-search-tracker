@@ -32,8 +32,10 @@ export const getUserJobs = async (userId: string) => {
 };
 
 export const getUserJobsWithFilters = async (userId: string, filters: JobFilters) => {
-    const { title = '', company = '', location = '', status } = filters;
+    const { title, company, location, status } = filters;
     const queryFilters = [];
+
+    console.log('Received filters:', filters);
 
     if (hasValue(filters.title)) {
         if (Array.isArray(title)) {

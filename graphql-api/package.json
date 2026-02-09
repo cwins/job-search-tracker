@@ -21,7 +21,7 @@
     "hono": "^4.11.7"
   },
   "scripts": {
-    "dev": "bun --hot run ./index.ts",
+    "dev": "bun --hot --inspect run ./index.ts",
     "graphql:types": "graphql-codegen"
   }
 }

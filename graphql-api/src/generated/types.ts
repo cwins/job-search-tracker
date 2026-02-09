@@ -6,6 +6,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -25,7 +26,16 @@ export type Job = {
   listingUrl: Scalars['String']['output'];
   location: Scalars['String']['output'];
   notes: Array<Note>;
+  status: StatusEnum;
+  statusHistory: Array<StatusChange>;
   title: Scalars['String']['output'];
+};
+
+export type JobsFilterInputs = {
+  company: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  location: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  status: InputMaybe<Array<InputMaybe<StatusEnum>>>;
+  title: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type Note = {
@@ -33,7 +43,7 @@ export type Note = {
   content: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   jobId: Scalars['ID']['output'];
-  timestamp: Scalars['Int']['output'];
+  timestamp: Scalars['String']['output'];
 };
 
 export type Query = {
@@ -41,9 +51,15 @@ export type Query = {
   getJobs: Array<Job>;
 };
 
-export type Status = {
-  __typename: 'Status';
-  date: Scalars['Int']['output'];
+
+export type QueryGetJobsArgs = {
+  filters: InputMaybe<JobsFilterInputs>;
+  userId: Scalars['ID']['input'];
+};
+
+export type StatusChange = {
+  __typename: 'StatusChange';
+  date: Scalars['String']['output'];
   status: StatusEnum;
 };
 
@@ -135,9 +151,10 @@ export type ResolversTypes = {
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Job: ResolverTypeWrapper<Job>;
+  JobsFilterInputs: JobsFilterInputs;
   Note: ResolverTypeWrapper<Note>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
-  Status: ResolverTypeWrapper<Status>;
+  StatusChange: ResolverTypeWrapper<StatusChange>;
   StatusEnum: StatusEnum;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
 };
@@ -148,9 +165,10 @@ export type ResolversParentTypes = {
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   Job: Job;
+  JobsFilterInputs: JobsFilterInputs;
   Note: Note;
   Query: Record<PropertyKey, never>;
-  Status: Status;
+  StatusChange: StatusChange;
   String: Scalars['String']['output'];
 };
 
@@ -163,6 +181,8 @@ export type JobResolvers<ContextType = any, ParentType extends ResolversParentTy
   listingUrl: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   location: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes: Resolver<Array<ResolversTypes['Note']>, ParentType, ContextType>;
+  status: Resolver<ResolversTypes['StatusEnum'], ParentType, ContextType>;
+  statusHistory: Resolver<Array<ResolversTypes['StatusChange']>, ParentType, ContextType>;
   title: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
@@ -170,15 +190,15 @@ export type NoteResolvers<ContextType = any, ParentType extends ResolversParentT
   content: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   jobId: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  timestamp: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  timestamp: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  getJobs: Resolver<Array<ResolversTypes['Job']>, ParentType, ContextType>;
+  getJobs: Resolver<Array<ResolversTypes['Job']>, ParentType, ContextType, RequireFields<QueryGetJobsArgs, 'userId'>>;
 };
 
-export type StatusResolvers<ContextType = any, ParentType extends ResolversParentTypes['Status'] = ResolversParentTypes['Status']> = {
-  date: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+export type StatusChangeResolvers<ContextType = any, ParentType extends ResolversParentTypes['StatusChange'] = ResolversParentTypes['StatusChange']> = {
+  date: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   status: Resolver<ResolversTypes['StatusEnum'], ParentType, ContextType>;
 };
 
@@ -186,6 +206,6 @@ export type Resolvers<ContextType = any> = {
   Job: JobResolvers<ContextType>;
   Note: NoteResolvers<ContextType>;
   Query: QueryResolvers<ContextType>;
-  Status: StatusResolvers<ContextType>;
+  StatusChange: StatusChangeResolvers<ContextType>;
 };
 

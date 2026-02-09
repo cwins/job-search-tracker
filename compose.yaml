@@ -23,7 +23,14 @@ services:
     restart: always
     working_dir: /app
     command: ["bun", "run", "dev"]
+    develop:
+      watch:
+        - action: restart
+          path: ./postgresql-db/
+        - action: restart
+          path: ./compose.yaml
     environment:
+      HTTP_PORT: 4001
       POSTGRES_HOST: "db"
     ports:
       - 4001:4001
@@ -43,9 +50,19 @@ services:
         condition: service_healthy
   graphql:
     image: oven/bun:alpine
+    restart: always
     # dev mode for now, later will make separate compose files
     working_dir: /app
     command: ["bun", "run", "dev"]
+    develop:
+      watch:
+        - action: restart
+          path: ./graphql-api/
+        - action: restart
+          path: ./compose.yaml
+    environment:
+      HTTP_PORT: 4000
+      JOBS_API_ENDPOINT: "http://db-access:4001"
     ports:
       - 4000:4000
     networks:

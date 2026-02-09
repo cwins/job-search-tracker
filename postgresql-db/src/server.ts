@@ -1,8 +1,7 @@
 import { Hono } from 'hono';
 import { getUserJobs, getUserJobsWithFilters, type JobFilters } from './actions';
-// import type { JobFilters } from './actions/get-user-jobs';
 
-const PORT = process.env.DB_ACCESS_API_PORT ? parseInt(process.env.DB_ACCESS_API_PORT) : 4001;
+const PORT = process.env.HTTP_PORT ? parseInt(process.env.HTTP_PORT) : 4001;
 
 interface JobsFilterInputs {
     userId: string;
@@ -34,7 +33,10 @@ export function startServer() {
             const [key, value] = input;
 
             if (value !== undefined && value !== null) {
-                (acc as typeof acc & { [key: string]: unknown })[key] = value;
+                return {
+                    ...acc,
+                    [key]: value
+                };
             }
 
             return acc;
