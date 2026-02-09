@@ -1,5 +1,5 @@
-import type { JobsFilterInputs } from "../../generated/types";
-import { JobsService } from "./jobs-service";
+import type { JobsFilterInputs } from '../../generated/types';
+import { JobsService } from './jobs-service';
 
 const ENDPOINT = process.env.JOBS_API_ENDPOINT || 'http://localhost:4001';
 

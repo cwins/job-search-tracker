@@ -1,5 +1,8 @@
 import { Hono } from 'hono';
+import { OpenAPIHono } from '@hono/zod-openapi';
 import { getUserJobs, getUserJobsWithFilters, type JobFilters } from './actions';
+import { jobsRoute } from './openapi';
+import { swaggerUI } from '@hono/swagger-ui';
 
 const PORT = process.env.HTTP_PORT ? parseInt(process.env.HTTP_PORT) : 4001;
 
@@ -13,11 +16,32 @@ interface JobsFilterInputs {
 
 export function startServer() {
     const app = new Hono();
+    const openApiApp = new OpenAPIHono();
 
     app.all('/health', async (ctx) => {
         console.log('Health check requested');
         return ctx.json({ status: 'ok', uptime: process.uptime() }, 200);
-    })
+    });
+
+    openApiApp.openapi(jobsRoute, (ctx) => {
+        const validBody = ctx.req.valid('json')
+
+        return ctx.json([], 200);
+    });
+
+    openApiApp.doc('/doc', {
+        openapi: '3.0.0',
+        info: {
+            title: 'Job Search Tracker API',
+            description: 'API documentation for the Job Search Tracker application',
+            version: '1.0.0'
+        }
+    });
+
+    openApiApp.get('/ui', swaggerUI({ url: '/openapi/doc', tryItOutEnabled: true }));
+
+    app.route('/openapi', openApiApp);
+
 
     // REST endpoint to retrieve one or more jobs based on column filters like id, title, company, etc. or by search term
     app.post('/jobs', async (ctx) => {

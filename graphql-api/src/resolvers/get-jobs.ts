@@ -1,5 +1,5 @@
-import type { QueryResolvers } from "../generated/types";
-import type { RequestContext } from "../types";
+import type { QueryResolvers } from '../generated/types';
+import type { RequestContext } from '../types';
 
 
 export const getJobs: QueryResolvers['getJobs'] = async (
