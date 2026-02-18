@@ -43,7 +43,7 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
-      start_period: 5s
+      start_period: 2s
       start_interval: 5s
     depends_on:
       db:
@@ -69,8 +69,38 @@ services:
       - default
     volumes:
       - ./graphql-api:/app
+    healthcheck:
+      test: ["CMD-SHELL", "bun run scripts/healthcheck.ts"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+      start_interval: 5s
     depends_on:
       db-access:
+        condition: service_healthy
+  client-ui:
+    image: oven/bun:latest
+    restart: always
+    working_dir: /app
+    command: ["./dev.sh"]
+    develop:
+      watch:
+        - action: restart
+          path: ./client-ui/
+        - action: restart
+          path: ./compose.yaml
+    environment:
+      HTTP_PORT: 4002
+      GRAPHQL_API_ENDPOINT: "http://graphql:4000"
+    ports:
+      - 4002:4002
+    networks:
+      - default
+    volumes:
+      - ./client-ui:/app
+    depends_on:
+      graphql:
         condition: service_healthy
 volumes:
   db-data:

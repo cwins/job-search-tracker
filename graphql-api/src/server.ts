@@ -31,6 +31,11 @@ export async function startServer() {
         context
     });
 
+    app.all("/health", async (ctx) => {
+      console.log("Health check requested");
+      return ctx.json({ status: "ok", uptime: process.uptime() }, 200);
+    });
+
     app.get('/graphql', async (ctx) => yoga.fetch(ctx.req.raw));
     app.post('/graphql', async (ctx) => yoga.fetch(ctx.req.raw));
 

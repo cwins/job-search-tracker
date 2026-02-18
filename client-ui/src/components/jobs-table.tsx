@@ -1,4 +1,5 @@
 import { Table } from '@chakra-ui/react';
+import { useNavigate } from '@tanstack/react-router';
 
 const mockData = {
   jobs: {
@@ -61,8 +62,10 @@ const mockData = {
 };
 
 export const JobsTable: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
-    <Table.Root>
+    <Table.Root interactive>
       <Table.Header>
         <Table.Row bg="bg.info">
           {mockData.jobs.headings.map((heading) => (
@@ -72,7 +75,7 @@ export const JobsTable: React.FC = () => {
       </Table.Header>
       <Table.Body>
         {mockData.jobs.rows.map((job) => (
-          <Table.Row key={job.id}>
+          <Table.Row key={job.id} onClick={() => navigate({ to: `/job/${job.id}` })} cursor="pointer">
             <Table.Cell>{job.company}</Table.Cell>
             <Table.Cell>{job.position}</Table.Cell>
             <Table.Cell>{job.location}</Table.Cell>
