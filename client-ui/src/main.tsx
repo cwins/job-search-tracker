@@ -6,6 +6,7 @@ import './index.css';
 import { Provider } from '@/components/ui/provider.tsx';
 
 import { routeTree } from './routeTree.gen';
+import { UrqlProvider } from './components/urql-provider';
 
 const router = createRouter({ routeTree });
 
@@ -18,7 +19,9 @@ declare module '@tanstack/react-router' {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider>
-      <RouterProvider router={router} />
+      <UrqlProvider>
+        <RouterProvider router={router} />
+      </UrqlProvider>
     </Provider>
   </StrictMode>
 );

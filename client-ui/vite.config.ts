@@ -10,6 +10,7 @@ export default defineConfig({
   },
   preview: {
     port: process.env.HTTP_PORT ? parseInt(process.env.HTTP_PORT) : 4002,
+    host: true
   },
   plugins: [
     tanstackRouter({

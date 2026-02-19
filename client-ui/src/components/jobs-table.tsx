@@ -1,5 +1,8 @@
 import { Table } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
+import { useQuery } from 'urql';
+
+import { graphql } from '@/__generated';
 
 const mockData = {
   jobs: {
@@ -61,8 +64,32 @@ const mockData = {
   }
 };
 
+const jobsListQuery = graphql(/* GraphQL */ `
+  query JobsList($userId: ID!) {
+    getJobs(userId: $userId) {
+      id
+      company
+      title
+      location
+      status
+    }
+  }
+`);
+
 export const JobsTable: React.FC = () => {
   const navigate = useNavigate();
+  const [{ data, error, fetching }] = useQuery({
+    query: jobsListQuery,
+    variables: { userId: 'TODO' }
+  });
+
+  if (error && !data) {
+    return <div>Error loading jobs: {error.message}</div>;
+  }
+
+  if (fetching) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Table.Root interactive>
