@@ -3,6 +3,8 @@ import { useNavigate } from '@tanstack/react-router';
 import { useQuery } from 'urql';
 
 import { graphql } from '@/__generated';
+import { StatusIcon } from './status-icon';
+import type { StatusEnum } from '@/__generated/graphql';
 
 const mockData = {
   jobs: {
@@ -78,17 +80,13 @@ const jobsListQuery = graphql(/* GraphQL */ `
 
 export const JobsTable: React.FC = () => {
   const navigate = useNavigate();
-  const [{ data, error, fetching }] = useQuery({
+  const [{ data, error }] = useQuery({
     query: jobsListQuery,
     variables: { userId: 'TODO' }
   });
 
   if (error && !data) {
-    return <div>Error loading jobs: {error.message}</div>;
-  }
-
-  if (fetching) {
-    return <div>Loading...</div>;
+    console.log('Error fetching jobs:', error);
   }
 
   return (
@@ -106,9 +104,16 @@ export const JobsTable: React.FC = () => {
             <Table.Cell>{job.company}</Table.Cell>
             <Table.Cell>{job.position}</Table.Cell>
             <Table.Cell>{job.location}</Table.Cell>
-            <Table.Cell><a href={job.link} target="_blank" rel="noopener noreferrer">View</a></Table.Cell>
+            <Table.Cell>
+              <a href={job.link} target="_blank" rel="noopener noreferrer">
+                View
+              </a>
+            </Table.Cell>
             <Table.Cell>{job.dateApplied}</Table.Cell>
-            <Table.Cell>{job.status}</Table.Cell>
+            <Table.Cell>
+              <StatusIcon status={job.status as StatusEnum} />
+              {job.status}
+            </Table.Cell>
           </Table.Row>
         ))}
       </Table.Body>

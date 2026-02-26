@@ -8,7 +8,7 @@ import resolvers from './resolvers';
 import type { ContextWithServices } from './types';
 import { JobsServicePostgreSQL } from './services/jobs/jobs-service-postgresql';
 
-const PORT = process.env.HTTP_PORT ? parseInt(process.env.HTTP_PORT) : 4000;
+const PORT = process.env.HTTP_PORT ? parseInt(process.env.HTTP_PORT) : 4001;
 
 export async function startServer() {
     const typeDefs = await loadSchema('src/schema.graphql', {

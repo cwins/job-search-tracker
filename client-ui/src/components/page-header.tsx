@@ -1,9 +1,16 @@
-import { AvatarIcon, Bleed, Box, Flex, Text } from '@chakra-ui/react';
+import { AvatarIcon, Bleed, Box, Flex, Heading, Text } from '@chakra-ui/react';
 
 export const PageHeader: React.FC = () => {
   return (
     <Bleed bg="gray.200" color="purple.contrast">
-      <Flex direction="column" align="center" backgroundImage="url('/banner_bg_compressed.png')" backgroundSize="cover" backgroundPosition="center" padding="4">
+      <Flex
+        direction="column"
+        align="center"
+        backgroundImage="url('/images/banner_bg_compressed.png')"
+        backgroundSize="cover"
+        backgroundPosition="center"
+        padding="4"
+      >
         <Box alignSelf="end" padding="2">
           <Text fontSize="normal" fontWeight="bold">
             Person
@@ -11,8 +18,10 @@ export const PageHeader: React.FC = () => {
           </Text>
         </Box>
 
-        <Box paddingY="12">
-          <h1>Job Tracker</h1>
+        <Box paddingY="12" textAlign="center">
+          <Heading as="h1" size="4xl" fontWeight="bold">
+            Job Tracker
+          </Heading>
           <p>Keep track of the jobs you're interested in or have already applied to. Nice and simple.</p>
         </Box>
       </Flex>

@@ -1,6 +1,6 @@
 console.info("Starting health check...");
 
-fetch(`http://localhost:${process.env.HTTP_PORT || 4000}/health`).then(
+fetch(`http://localhost:${process.env.HTTP_PORT || 4001}/health`).then(
   async (res) => {
     if (res.ok) {
       const result = await res.json();

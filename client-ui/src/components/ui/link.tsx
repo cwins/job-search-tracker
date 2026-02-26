@@ -6,7 +6,7 @@ import { Link as RouterLink, type LinkComponentProps } from '@tanstack/react-rou
 export const Link = (props: LinkComponentProps) => {
   return (
     <ChakraLink asChild>
-        <RouterLink {...props} />
+      <RouterLink {...props} />
     </ChakraLink>
   );
 };

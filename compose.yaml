@@ -30,10 +30,10 @@ services:
         - action: restart
           path: ./compose.yaml
     environment:
-      HTTP_PORT: 4001
+      HTTP_PORT: 4002
       POSTGRES_HOST: "db"
     ports:
-      - 4001:4001
+      - 4002:4002
     networks:
       - default
     volumes:
@@ -61,10 +61,10 @@ services:
         - action: restart
           path: ./compose.yaml
     environment:
-      HTTP_PORT: 4000
-      JOBS_API_ENDPOINT: "http://db-access:4001"
+      HTTP_PORT: 4001
+      JOBS_API_ENDPOINT: "http://db-access:4002"
     ports:
-      - 4000:4000
+      - 4001:4001
     networks:
       - default
     volumes:
@@ -81,9 +81,10 @@ services:
         condition: service_healthy
   client-ui:
     image: oven/bun:latest
+    build:
+      context: ./client-ui
+      dockerfile: Dockerfile
     restart: always
-    working_dir: /app
-    command: ["./dev.sh"]
     develop:
       watch:
         - action: restart
@@ -91,14 +92,14 @@ services:
         - action: restart
           path: ./compose.yaml
     environment:
-      HTTP_PORT: 4002
-      GRAPHQL_API_ENDPOINT: "http://graphql:4000"
+      HTTP_PORT: 4000
+      GRAPHQL_API_ENDPOINT: "http://graphql:4001/graphql"
     ports:
-      - 4002:4002
+      - 4000:4000
     networks:
       - default
-    volumes:
-      - ./client-ui:/app
+    # volumes:
+    #   - ./client-ui:/app
     depends_on:
       graphql:
         condition: service_healthy

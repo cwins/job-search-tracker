@@ -12,6 +12,7 @@
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
+    "allowJs": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
     "noEmit": true,
@@ -29,5 +30,5 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["index.ts", "src"]
+  "include": ["index.ts", "src", "dist/server/entry-server.js"]
 }
