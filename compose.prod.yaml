@@ -1,0 +1,22 @@
+# Production-style overrides: build all app images, no dev watch or source mounts.
+# Run: docker compose -f compose.yaml -f compose.prod.yaml up --build
+
+services:
+  db-access:
+    build:
+      context: ./postgresql-db
+      dockerfile: Dockerfile
+    command: ["bun", "run", "index.ts"]
+    volumes: []
+    develop: {}
+
+  graphql:
+    build:
+      context: ./graphql-api
+      dockerfile: Dockerfile
+    command: ["bun", "run", "index.ts"]
+    volumes: []
+    develop: {}
+
+  client-ui:
+    develop: {}

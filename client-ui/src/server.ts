@@ -5,7 +5,11 @@ import { logger } from 'hono/logger';
 import { proxy } from 'hono/proxy';
 import path from 'path';
 
-const PORT = process.env.HTTP_PORT ? parseInt(process.env.HTTP_PORT) : 4000;
+const PORT = process.env.PORT
+  ? parseInt(process.env.PORT, 10)
+  : process.env.HTTP_PORT
+    ? parseInt(process.env.HTTP_PORT, 10)
+    : 4000;
 const GRAPHQL_API_ENDPOINT = process.env.GRAPHQL_API_ENDPOINT || 'http://localhost:4001/graphql';
 
 const serverEntryPath =
