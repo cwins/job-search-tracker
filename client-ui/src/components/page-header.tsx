@@ -1,4 +1,42 @@
-import { AvatarIcon, Bleed, Box, Flex, Heading, Text } from '@chakra-ui/react';
+import { AvatarIcon, Bleed, Box, Button, Flex, Heading, HStack, Text } from '@chakra-ui/react';
+import { useNavigate } from '@tanstack/react-router';
+import { useAuth } from '@/auth/auth-context';
+import { Link } from './ui/link';
+import { ColorModeButton, DarkMode } from './ui/color-mode';
+
+const UserMenu: React.FC = () => {
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  if (user) {
+    return (
+      <>
+        <Text fontSize="normal" fontWeight="bold">
+          {user.username}
+          <AvatarIcon marginInlineStart="2" name={user.username} display="inline-block" />
+        </Text>
+        <Button
+          size="sm"
+          variant="plain"
+          onClick={async () => {
+            await logout();
+            navigate({ to: '/login' });
+          }}
+        >
+          Logout
+        </Button>
+      </>
+    );
+  }
+
+  return (
+    <Link to="/login">
+      <Button size="sm" fontWeight="bold" variant="plain">
+        Login
+      </Button>
+    </Link>
+  );
+};
 
 export const PageHeader: React.FC = () => {
   return (
@@ -12,10 +50,13 @@ export const PageHeader: React.FC = () => {
         padding="4"
       >
         <Box alignSelf="end" padding="2">
-          <Text fontSize="normal" fontWeight="bold">
-            Person
-            <AvatarIcon name="foo" display="inline-block" />
-          </Text>
+          <HStack gap="3">
+            {/* the banner bg is dark, so force its children to always behave like it's dark mode */}
+            <DarkMode>
+              <UserMenu />
+              <ColorModeButton />
+            </DarkMode>
+          </HStack>
         </Box>
 
         <Box paddingY="12" textAlign="center">

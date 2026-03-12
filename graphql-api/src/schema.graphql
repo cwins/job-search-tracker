@@ -1,6 +1,6 @@
 type Query {
     # get all jobs for now, add filtering later
-    getJobs(userId: ID!, filters: JobsFilterInputs): [Job!]!
+    getJobs(filters: JobsFilterInputs): [Job!]!
 }
 
 input JobsFilterInputs {

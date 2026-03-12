@@ -7,7 +7,15 @@
     "@graphql-codegen/cli": "^6.1.1",
     "@graphql-codegen/typescript": "^5.0.7",
     "@graphql-codegen/typescript-resolvers": "^5.1.5",
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.1",
+    "prettier-eslint": "^16.4.2",
+    "typescript-eslint": "^8.48.0"
   },
   "peerDependencies": {
     "typescript": "^5"
@@ -16,12 +24,18 @@
     "@graphql-tools/graphql-file-loader": "^8.1.9",
     "@graphql-tools/load": "^8.1.8",
     "@graphql-tools/schema": "^10.0.31",
+    "@graphql-yoga/plugin-jwt": "^3.12.1",
     "graphql": "^16.12.0",
     "graphql-yoga": "^5.18.0",
-    "hono": "^4.11.7"
+    "hono": "^4.11.7",
+    "@whatwg-node/server-plugin-cookies": "^1.0.0"
   },
   "scripts": {
+    "build": "NODE_ENV=production bun build ./index.ts --outFile ./dist/index.js --target=bun --production",
     "dev": "bun --hot run ./index.ts",
-    "graphql:types": "graphql-codegen"
+    "graphql:types": "graphql-codegen",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "start": "bun run ./dist/index.js"
   }
 }

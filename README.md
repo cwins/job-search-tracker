@@ -57,6 +57,14 @@ So: Browser → client-ui → graphql-api → postgresql-db → PostgreSQL.
 
 All apps are intended to run with **Bun** (because I love it), but the entrypoints could easily be changed to run with Node instead..
 
+## Configuration and secrets
+
+- **Local dev**: You can run without any env file. `AUTH_JWT_SECRET` and DB credentials fall back to defaults in code/compose (fine for local only).
+- **Production / deployment**: Secrets must come from the environment, not from the repo.
+  - Copy `.env.example` to `.env` and set real values (or set the same variables in your deployment platform).
+  - **`AUTH_JWT_SECRET`** is required: used by **graphql-api** and **postgresql-db** to sign/verify JWTs. In production the app would refuse to start if this is unset or still the dev default. In a real deployment this should be set to a long, random value stored in a secret manager.
+  - `.env` is gitignored; never commit it. In production you typically inject env vars from your orchestrator (Kubernetes secrets, Cloud Run env, etc.) rather than a file.
+
 ## Running locally
 
 Prerequisites: Docker (with Compose), or Bun for running apps individually.
@@ -81,10 +89,11 @@ Then open **http://localhost:4000** for the UI. The Compose file is set up for *
 To run with all three apps built as images and no dev watch/volumes:
 
 ```bash
+# Optional: copy .env.example to .env and set at least AUTH_JWT_SECRET (required when NODE_ENV=production)
 docker compose -f compose.yaml -f compose.prod.yaml up --build
 ```
 
-See “Compose files” below.
+See “Compose files” and “Configuration and secrets” below.
 
 ### Run apps without Docker
 
@@ -100,7 +109,7 @@ Port defaults: client-ui 4000, graphql 4001, db-access 4002, Postgres 5432.
 ## Compose files
 
 - **compose.yaml** – Main file for **local development**: db + db-access + graphql + client-ui, with healthchecks, dev watch where applicable, and volume mounts for db-access and graphql so you can edit code and restart without rebuilding. client-ui is built from its Dockerfile.
-- **compose.prod.yaml** – Overrides for a **production-style** run: all three apps are built from Dockerfiles, no dev watch, no app volume mounts (only `db-data` remains). Use:  
+- **compose.prod.yaml** – Overrides for a **production-style** run: all three apps are built from Dockerfiles, no dev watch, no app volume mounts (only `db-data` remains). Loads env from `.env` if present; set `AUTH_JWT_SECRET` there (or in the shell) for auth. Use:  
   `docker compose -f compose.yaml -f compose.prod.yaml up --build`.
 
 ## Useful commands (per app)

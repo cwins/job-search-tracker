@@ -5,12 +5,9 @@ import { logger } from 'hono/logger';
 import { proxy } from 'hono/proxy';
 import path from 'path';
 
-const PORT = process.env.PORT
-  ? parseInt(process.env.PORT, 10)
-  : process.env.HTTP_PORT
-    ? parseInt(process.env.HTTP_PORT, 10)
-    : 4000;
+const PORT = process.env.HTTP_PORT ? parseInt(process.env.HTTP_PORT, 10) : 4000;
 const GRAPHQL_API_ENDPOINT = process.env.GRAPHQL_API_ENDPOINT || 'http://localhost:4001/graphql';
+const DB_ACCESS_ENDPOINT = process.env.DB_ACCESS_ENDPOINT || 'http://localhost:4002';
 
 const serverEntryPath =
   process.env.NODE_ENV === 'production'
@@ -33,10 +30,18 @@ export async function startServer() {
   app.use('/favicon.*', serveStatic({ root: path.join(import.meta.dirname, '../dist/client'), path: 'favicon.png' }));
 
   app.post('/graphql', (ctx) => {
-    return proxy(GRAPHQL_API_ENDPOINT).catch((reason) => {
+    return proxy(GRAPHQL_API_ENDPOINT, { ...ctx.req }).catch((reason) => {
       console.log('Failed to fetch from GraphQL endpoint with reason:', reason);
 
       return ctx.json({ data: {} });
+    });
+  });
+
+  app.all('/auth/*', (ctx) => {
+    const path = ctx.req.path.replace(/^\/auth/, '');
+    return proxy(`${DB_ACCESS_ENDPOINT}/auth${path}`, { ...ctx.req }).catch((reason) => {
+      console.log('Failed to fetch from auth endpoint with reason:', reason);
+      return ctx.json({ error: 'AUTH_PROXY_ERROR' }, 502);
     });
   });
 

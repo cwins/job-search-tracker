@@ -1,6 +1,7 @@
 import type { Job, JobsFilterInputs } from '../../generated/types';
+import { Service } from '../service';
 
-export abstract class JobsService {
-    abstract getJobs(userId: string): Promise<Job[]>;
-    abstract getFilteredJobs(userId: string, filters: JobsFilterInputs): Promise<Job[]>;
+export abstract class JobsService extends Service {
+    abstract getJobs(token?: string): Promise<Job[]>;
+    abstract getFilteredJobs(filters: JobsFilterInputs, token?: string): Promise<Job[]>;
 }

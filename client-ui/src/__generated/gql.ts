@@ -14,10 +14,10 @@ import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
-    "\n  query JobsList($userId: ID!) {\n    getJobs(userId: $userId) {\n      id\n      company\n      title\n      location\n      status\n    }\n  }\n": typeof types.JobsListDocument,
+    "\n  query JobsList {\n    getJobs {\n      id\n      company\n      title\n      location\n      status\n    }\n  }\n": typeof types.JobsListDocument,
 };
 const documents: Documents = {
-    "\n  query JobsList($userId: ID!) {\n    getJobs(userId: $userId) {\n      id\n      company\n      title\n      location\n      status\n    }\n  }\n": types.JobsListDocument,
+    "\n  query JobsList {\n    getJobs {\n      id\n      company\n      title\n      location\n      status\n    }\n  }\n": types.JobsListDocument,
 };
 
 /**
@@ -37,7 +37,7 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query JobsList($userId: ID!) {\n    getJobs(userId: $userId) {\n      id\n      company\n      title\n      location\n      status\n    }\n  }\n"): (typeof documents)["\n  query JobsList($userId: ID!) {\n    getJobs(userId: $userId) {\n      id\n      company\n      title\n      location\n      status\n    }\n  }\n"];
+export function graphql(source: "\n  query JobsList {\n    getJobs {\n      id\n      company\n      title\n      location\n      status\n    }\n  }\n"): (typeof documents)["\n  query JobsList {\n    getJobs {\n      id\n      company\n      title\n      location\n      status\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

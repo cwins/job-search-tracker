@@ -67,8 +67,8 @@ const mockData = {
 };
 
 const jobsListQuery = graphql(/* GraphQL */ `
-  query JobsList($userId: ID!) {
-    getJobs(userId: $userId) {
+  query JobsList {
+    getJobs {
       id
       company
       title
@@ -81,8 +81,7 @@ const jobsListQuery = graphql(/* GraphQL */ `
 export const JobsTable: React.FC = () => {
   const navigate = useNavigate();
   const [{ data, error }] = useQuery({
-    query: jobsListQuery,
-    variables: { userId: 'TODO' }
+    query: jobsListQuery
   });
 
   if (error && !data) {

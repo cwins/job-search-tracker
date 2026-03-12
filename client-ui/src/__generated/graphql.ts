@@ -54,7 +54,6 @@ export type Query = {
 
 export type QueryGetJobsArgs = {
   filters: InputMaybe<JobsFilterInputs>;
-  userId: Scalars['ID']['input'];
 };
 
 export type StatusChange = {
@@ -74,12 +73,10 @@ export type StatusEnum =
   | 'SAVED'
   | 'STALE';
 
-export type JobsListQueryVariables = Exact<{
-  userId: Scalars['ID']['input'];
-}>;
+export type JobsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type JobsListQuery = { __typename: 'Query', getJobs: Array<{ __typename: 'Job', id: string, company: string, title: string, location: string, status: StatusEnum }> };
 
 
-export const JobsListDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"JobsList"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getJobs"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"company"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"location"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]} as unknown as DocumentNode<JobsListQuery, JobsListQueryVariables>;
+export const JobsListDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"JobsList"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getJobs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"company"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"location"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]} as unknown as DocumentNode<JobsListQuery, JobsListQueryVariables>;

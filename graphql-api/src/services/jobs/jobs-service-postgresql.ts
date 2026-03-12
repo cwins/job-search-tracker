@@ -4,15 +4,16 @@ import { JobsService } from './jobs-service';
 const ENDPOINT = process.env.JOBS_API_ENDPOINT || 'http://localhost:4001';
 
 export class JobsServicePostgreSQL extends JobsService {
-    async getJobs(userId: string) {
-        console.log('Fetching jobs for user');
+    readonly serviceName = 'JobsServicePostgreSQL';
 
+    async getJobs(token?: string) {
         const response = await fetch(`${ENDPOINT}/jobs`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
             },
-            body: JSON.stringify({ userId }),
+            body: JSON.stringify({}),
         }).then((res) => {
             if (!res.ok) {
                 throw new Error(`Fetch error: ${res.statusText || 'unknown reason'}`);
@@ -33,15 +34,14 @@ export class JobsServicePostgreSQL extends JobsService {
         return response.json();
     }
 
-    async getFilteredJobs(userId: string, filters: JobsFilterInputs) {
-        console.log('Fetching filtered jobs for user:', filters);
-
+    async getFilteredJobs(filters: JobsFilterInputs, token?: string) {
         const response = await fetch(`${ENDPOINT}/jobs`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
             },
-            body: JSON.stringify({ userId, ...filters }),
+            body: JSON.stringify({ ...filters }),
         }).then((res) => {
             if (!res.ok) {
                 throw new Error(`Fetch error: ${res.statusText || 'unknown reason'}`);

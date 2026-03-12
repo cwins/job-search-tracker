@@ -5,6 +5,7 @@ import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from '@tanst
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { useEffect } from 'react';
 import { Provider } from '@/components/ui/provider';
+import { AuthProvider } from '@/auth/auth-context';
 
 const App = () => {
   useEffect(() => {
@@ -22,21 +23,23 @@ const App = () => {
       </head>
       <body>
         <Provider>
-          <div id="app">
-            <Flex direction="column" align="center" alignItems="stretch" width="100%" minHeight="100vh" boxShadow="md">
-              <PageHeader />
-              <PageContent>
-                <Outlet />
-              </PageContent>
-            </Flex>
-          </div>
-          <div id="ssr-scripts">
-            <script type="text/javascript" dangerouslySetInnerHTML={{ __html: getInlineConfigScript() }} />
-            <Scripts />
-          </div>
-          <div id="tanstack-router-devtools">
-            <TanStackRouterDevtools position="bottom-right" />
-          </div>
+          <AuthProvider>
+            <div id="app">
+              <Flex direction="column" align="center" alignItems="stretch" width="100%" minHeight="100vh" boxShadow="md">
+                <PageHeader />
+                <PageContent>
+                  <Outlet />
+                </PageContent>
+              </Flex>
+            </div>
+            <div id="ssr-scripts">
+              <script type="text/javascript" dangerouslySetInnerHTML={{ __html: getInlineConfigScript() }} />
+              <Scripts />
+            </div>
+            <div id="tanstack-router-devtools">
+              <TanStackRouterDevtools position="bottom-right" />
+            </div>
+          </AuthProvider>
         </Provider>
       </body>
     </>

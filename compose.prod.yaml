@@ -1,5 +1,9 @@
 # Production-style overrides: build all app images, no dev watch or source mounts.
 # Run: docker compose -f compose.yaml -f compose.prod.yaml up --build
+#
+# Secrets: set AUTH_JWT_SECRET in a .env file (copy from .env.example) or in your shell.
+# Compose substitutes ${AUTH_JWT_SECRET} from the project .env if present. Never commit .env.
+# With NODE_ENV=production, the app exits if AUTH_JWT_SECRET is missing or still the dev default.
 
 services:
   db-access:
@@ -9,6 +13,9 @@ services:
     command: ["bun", "run", "index.ts"]
     volumes: []
     develop: {}
+    environment:
+      NODE_ENV: production
+      AUTH_JWT_SECRET: ${AUTH_JWT_SECRET}
 
   graphql:
     build:
@@ -17,6 +24,9 @@ services:
     command: ["bun", "run", "index.ts"]
     volumes: []
     develop: {}
+    environment:
+      NODE_ENV: production
+      AUTH_JWT_SECRET: ${AUTH_JWT_SECRET}
 
   client-ui:
     develop: {}

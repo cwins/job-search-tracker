@@ -27,6 +27,10 @@ declare global {
 const urqlClient = new Client({
   url: window.__config?.graphql?.endpoint || '/graphql',
   exchanges: [cacheExchange, fetchExchange],
+  fetchOptions: {
+    credentials: 'include',
+    method: 'POST'
+  },
   preferGetMethod: false,
   suspense: true
 });

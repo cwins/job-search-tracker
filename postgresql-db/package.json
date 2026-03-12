@@ -6,7 +6,15 @@
   "devDependencies": {
     "@types/bun": "latest",
     "@types/pg": "^8.16.0",
-    "drizzle-kit": "^0.31.8"
+    "drizzle-kit": "^0.31.8",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.1",
+    "prettier-eslint": "^16.4.2",
+    "typescript-eslint": "^8.48.0"
   },
   "peerDependencies": {
     "typescript": "^5"
@@ -14,6 +22,7 @@
   "dependencies": {
     "@hono/swagger-ui": "^0.5.3",
     "@hono/zod-openapi": "^1.2.1",
+    "bcryptjs": "^3.0.2",
     "drizzle-orm": "^0.45.1",
     "drizzle-zod": "^0.8.3",
     "hono": "^4.11.7",
@@ -21,8 +30,12 @@
     "zod": "^4.3.6"
   },
   "scripts": {
-    "dev": "NODE_ENV=production bun --hot run index.ts",
+    "build": "NODE_ENV=production bun build index.ts --outfile ./dist/index.js --target=bun --production",
+    "dev": "bun --hot run index.ts",
     "drizzle:push": "drizzle-kit push --verbose",
-    "drizzle:studio": "drizzle-kit studio --port 3000 --verbose"
+    "drizzle:studio": "drizzle-kit studio --port 3000 --verbose",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "start": "NODE_ENV=production bun run ./dist/index.js"
   }
 }

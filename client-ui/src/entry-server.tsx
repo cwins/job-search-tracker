@@ -19,9 +19,14 @@ const getManifest = async () => {
 
 export const render = async (req: Request): Promise<string> => {
   const manifest = await getManifest();
+  const cookieHeader = req.headers.get('cookie') || '';
   const urqlClient = new Client({
     url: GRAPHQL_API_ENDPOINT,
     exchanges: [cacheExchange, fetchExchange],
+    fetchOptions: {
+      credentials: 'include',
+      headers: cookieHeader ? { cookie: cookieHeader } : undefined
+    },
     preferGetMethod: false,
     suspense: true
   });

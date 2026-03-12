@@ -31,7 +31,7 @@ export const jobs = pgTable('jobs', {
 
 export const users = pgTable('users', {
     id: uuid('id').primaryKey().defaultRandom(),
-    email: varchar('email', { length: 255 }).notNull().unique(),
+    username: varchar('username', { length: 255 }).notNull().unique(),
     passwordHash: varchar('password_hash', { length: 255 }).notNull(),
     createdDate: timestamp('created_date').notNull().defaultNow(),
 });

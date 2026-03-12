@@ -23,7 +23,6 @@ export const jobsRoute = createRoute({
             content: {
                 'application/json': {
                     schema: z.object({
-                        userId: z.string().min(1).openapi('userId'),
                         title: z.union([z.string().min(1), z.array(z.string().min(1))]).optional(),
                         company: z.union([z.string().min(1), z.array(z.string().min(1))]).optional(),
                         location: z.union([z.string().min(1), z.array(z.string().min(1))]).optional(),
@@ -32,7 +31,7 @@ export const jobsRoute = createRoute({
                 }
             },
             required: true,
-            description: 'The userId is a required input, while the other fields are optional filters'
+            description: 'Optional column filters. The user is derived from the session (cookie or Authorization header).'
         }
     },
     responses: {
@@ -45,5 +44,5 @@ export const jobsRoute = createRoute({
             description: 'A list of jobs matching the provided user and filters (if provided)'
         }
     },
-    description: 'Retrieve jobs for a given user'
+    description: 'Retrieve jobs for the authenticated user'
 });

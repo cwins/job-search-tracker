@@ -1,5 +1,5 @@
 import { and, eq, ilike, inArray, or, sql } from 'drizzle-orm';
-import { jobs, users, type JobStatus } from '../db-schema';
+import { jobs, type JobStatus } from '../db-schema';
 import { db } from '../db-connection';
 
 const HARD_LIMIT = 100;
