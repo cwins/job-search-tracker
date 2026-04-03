@@ -38,6 +38,22 @@ const UserMenu: React.FC = () => {
   );
 };
 
+const NavLinks: React.FC = () => {
+  return (
+    <HStack gap="4" flexWrap="wrap" justify="center">
+      <Link to="/">
+        <Text fontWeight="semibold">Browse</Text>
+      </Link>
+      <Link to="/my-recipes">
+        <Text fontWeight="semibold">My recipes</Text>
+      </Link>
+      <Link to="/my-saves">
+        <Text fontWeight="semibold">My saves</Text>
+      </Link>
+    </HStack>
+  );
+};
+
 export const PageHeader: React.FC = () => {
   return (
     <Bleed bg="gray.200" color="purple.contrast">
@@ -51,7 +67,6 @@ export const PageHeader: React.FC = () => {
       >
         <Box alignSelf="end" padding="2">
           <HStack gap="3">
-            {/* the banner bg is dark, so force its children to always behave like it's dark mode */}
             <DarkMode>
               <UserMenu />
               <ColorModeButton />
@@ -59,11 +74,16 @@ export const PageHeader: React.FC = () => {
           </HStack>
         </Box>
 
-        <Box paddingY="12" textAlign="center">
+        <Box paddingY="8" textAlign="center" width="100%">
           <Heading as="h1" size="4xl" fontWeight="bold">
-            Job Tracker
+            Recipe box
           </Heading>
-          <p>Keep track of the jobs you're interested in or have already applied to. Nice and simple.</p>
+          <Text mt="2" mb="4" maxW="lg" mx="auto">
+            Share and discover recipes: prep time, cook time, ingredients, and directions—all in one place.
+          </Text>
+          <DarkMode>
+            <NavLinks />
+          </DarkMode>
         </Box>
       </Flex>
     </Bleed>

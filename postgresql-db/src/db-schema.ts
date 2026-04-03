@@ -1,33 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { jsonb, pgTable, text, timestamp, uuid, varchar, pgEnum } from 'drizzle-orm/pg-core';
-
-export const JobStatusValues = ['SAVED', 'APPLIED', 'CORRESPONDING', 'INTERVIEWING', 'OFFER_RECEIVED', 'OFFER_ACCEPTED', 'REJECTED', 'STALE', 'ARCHIVED'] as const;
-export type JobStatus = typeof JobStatusValues[number];
-
-export const statusEnum = pgEnum('status', [...JobStatusValues])
-
-export const jobs = pgTable('jobs', {
-    id: uuid('id').primaryKey().defaultRandom(),
-    userId: uuid('user_id').notNull(),
-    creationTime: timestamp('creation_time').notNull().defaultNow(),
-    company: varchar('company', { length: 255 }).notNull(),
-    title: varchar('title', { length: 255 }).notNull(),
-    location: varchar('location', { length: 255 }).notNull(),
-    listingUrl: varchar('listing_url', { length: 510 }).notNull(),
-    listingDate: timestamp('listing_date').notNull(),
-    description: text('description').notNull(),
-    notes: jsonb('notes').$type<Array<{
-        id: string;
-        date: string;
-        title: string;
-        content: string;
-    }>>().notNull().default([]),
-    statusHistory: jsonb('status_history').$type<Array<{
-        date: string;
-        status: JobStatus;
-    }>>().notNull().default([]),
-    status: statusEnum()
-});
+import { boolean, integer, jsonb, pgTable, text, timestamp, uuid, varchar, unique } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
     id: uuid('id').primaryKey().defaultRandom(),
@@ -36,13 +8,54 @@ export const users = pgTable('users', {
     createdDate: timestamp('created_date').notNull().defaultNow(),
 });
 
-relations(jobs, ({ one }) => ({
-    user: one(users, {
-        fields: [jobs.userId],
+export const recipes = pgTable('recipes', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    authorId: uuid('author_id')
+        .notNull()
+        .references(() => users.id, { onDelete: 'cascade' }),
+    name: varchar('name', { length: 255 }).notNull(),
+    prepTimeMinutes: integer('prep_time_minutes').notNull(),
+    cookTimeMinutes: integer('cook_time_minutes').notNull(),
+    ingredients: jsonb('ingredients').$type<string[]>().notNull().default([]),
+    directions: text('directions').notNull(),
+    published: boolean('published').notNull().default(false),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
+export const recipeSaves = pgTable(
+    'recipe_saves',
+    {
+        userId: uuid('user_id')
+            .notNull()
+            .references(() => users.id, { onDelete: 'cascade' }),
+        recipeId: uuid('recipe_id')
+            .notNull()
+            .references(() => recipes.id, { onDelete: 'cascade' }),
+        savedAt: timestamp('saved_at').notNull().defaultNow(),
+    },
+    (t) => [unique('recipe_saves_user_recipe').on(t.userId, t.recipeId)]
+);
+
+relations(recipes, ({ one, many }) => ({
+    author: one(users, {
+        fields: [recipes.authorId],
         references: [users.id],
+    }),
+    saves: many(recipeSaves),
+}));
+
+relations(recipeSaves, ({ one }) => ({
+    user: one(users, {
+        fields: [recipeSaves.userId],
+        references: [users.id],
+    }),
+    recipe: one(recipes, {
+        fields: [recipeSaves.recipeId],
+        references: [recipes.id],
     }),
 }));
 
 relations(users, ({ many }) => ({
-    jobs: many(jobs),
+    recipes: many(recipes),
+    recipeSaves: many(recipeSaves),
 }));

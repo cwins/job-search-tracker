@@ -14,7 +14,7 @@ import { logger } from 'hono/logger';
 
 import resolvers from './resolvers';
 import type { ContextWithServices } from './types';
-import { JobsServicePostgreSQL } from './services/jobs/jobs-service-postgresql';
+import { RecipesServicePostgreSQL } from './services/recipes/recipes-service-postgresql';
 
 const PORT = process.env.HTTP_PORT ? parseInt(process.env.HTTP_PORT) : 4001;
 const AUTH_COOKIE_NAME = process.env.AUTH_COOKIE_NAME || 'auth_token';
@@ -63,7 +63,7 @@ export async function startServer() {
     context: async (initialContext): Promise<ContextWithServices> => ({
       ...initialContext,
       services: {
-        jobs: new JobsServicePostgreSQL(),
+        recipes: new RecipesServicePostgreSQL(),
       },
     }),
   });

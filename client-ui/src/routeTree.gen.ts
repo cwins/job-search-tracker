@@ -9,19 +9,25 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as MySavesRouteImport } from './routes/my-saves'
+import { Route as MyRecipesRouteImport } from './routes/my-recipes'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as JobsRouteImport } from './routes/jobs'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as JobJobIdRouteImport } from './routes/job.$jobId'
+import { Route as RecipeRecipeIdRouteImport } from './routes/recipe.$recipeId'
 
+const MySavesRoute = MySavesRouteImport.update({
+  id: '/my-saves',
+  path: '/my-saves',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyRecipesRoute = MyRecipesRouteImport.update({
+  id: '/my-recipes',
+  path: '/my-recipes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JobsRoute = JobsRouteImport.update({
-  id: '/jobs',
-  path: '/jobs',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -29,60 +35,77 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const JobJobIdRoute = JobJobIdRouteImport.update({
-  id: '/job/$jobId',
-  path: '/job/$jobId',
+const RecipeRecipeIdRoute = RecipeRecipeIdRouteImport.update({
+  id: '/recipe/$recipeId',
+  path: '/recipe/$recipeId',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/jobs': typeof JobsRoute
   '/login': typeof LoginRoute
-  '/job/$jobId': typeof JobJobIdRoute
+  '/my-recipes': typeof MyRecipesRoute
+  '/my-saves': typeof MySavesRoute
+  '/recipe/$recipeId': typeof RecipeRecipeIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/jobs': typeof JobsRoute
   '/login': typeof LoginRoute
-  '/job/$jobId': typeof JobJobIdRoute
+  '/my-recipes': typeof MyRecipesRoute
+  '/my-saves': typeof MySavesRoute
+  '/recipe/$recipeId': typeof RecipeRecipeIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/jobs': typeof JobsRoute
   '/login': typeof LoginRoute
-  '/job/$jobId': typeof JobJobIdRoute
+  '/my-recipes': typeof MyRecipesRoute
+  '/my-saves': typeof MySavesRoute
+  '/recipe/$recipeId': typeof RecipeRecipeIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/jobs' | '/login' | '/job/$jobId'
+  fullPaths: '/' | '/login' | '/my-recipes' | '/my-saves' | '/recipe/$recipeId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/jobs' | '/login' | '/job/$jobId'
-  id: '__root__' | '/' | '/jobs' | '/login' | '/job/$jobId'
+  to: '/' | '/login' | '/my-recipes' | '/my-saves' | '/recipe/$recipeId'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/my-recipes'
+    | '/my-saves'
+    | '/recipe/$recipeId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  JobsRoute: typeof JobsRoute
   LoginRoute: typeof LoginRoute
-  JobJobIdRoute: typeof JobJobIdRoute
+  MyRecipesRoute: typeof MyRecipesRoute
+  MySavesRoute: typeof MySavesRoute
+  RecipeRecipeIdRoute: typeof RecipeRecipeIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/my-saves': {
+      id: '/my-saves'
+      path: '/my-saves'
+      fullPath: '/my-saves'
+      preLoaderRoute: typeof MySavesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-recipes': {
+      id: '/my-recipes'
+      path: '/my-recipes'
+      fullPath: '/my-recipes'
+      preLoaderRoute: typeof MyRecipesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/jobs': {
-      id: '/jobs'
-      path: '/jobs'
-      fullPath: '/jobs'
-      preLoaderRoute: typeof JobsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -92,11 +115,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/job/$jobId': {
-      id: '/job/$jobId'
-      path: '/job/$jobId'
-      fullPath: '/job/$jobId'
-      preLoaderRoute: typeof JobJobIdRouteImport
+    '/recipe/$recipeId': {
+      id: '/recipe/$recipeId'
+      path: '/recipe/$recipeId'
+      fullPath: '/recipe/$recipeId'
+      preLoaderRoute: typeof RecipeRecipeIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -104,9 +127,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  JobsRoute: JobsRoute,
   LoginRoute: LoginRoute,
-  JobJobIdRoute: JobJobIdRoute,
+  MyRecipesRoute: MyRecipesRoute,
+  MySavesRoute: MySavesRoute,
+  RecipeRecipeIdRoute: RecipeRecipeIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

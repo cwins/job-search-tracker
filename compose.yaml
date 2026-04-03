@@ -63,7 +63,7 @@ services:
           path: ./compose.yaml
     environment:
       HTTP_PORT: 4001
-      JOBS_API_ENDPOINT: "http://db-access:4002"
+      RECIPES_API_ENDPOINT: "http://db-access:4002"
       AUTH_JWT_SECRET: "dev-insecure-secret-change-me"
     ports:
       - 4001:4001

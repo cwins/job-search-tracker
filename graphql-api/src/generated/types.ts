@@ -6,6 +6,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -15,62 +16,98 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
-export type Job = {
-  __typename: 'Job';
-  company: Scalars['String']['output'];
-  creationTime: Scalars['Int']['output'];
-  description: Scalars['String']['output'];
-  id: Scalars['ID']['output'];
-  listingDate: Scalars['Int']['output'];
-  listingUrl: Scalars['String']['output'];
-  location: Scalars['String']['output'];
-  notes: Array<Note>;
-  status: StatusEnum;
-  statusHistory: Array<StatusChange>;
-  title: Scalars['String']['output'];
+export type CreateRecipeInput = {
+  cookTimeMinutes: Scalars['Int']['input'];
+  directions: Scalars['String']['input'];
+  ingredients: Array<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  prepTimeMinutes: Scalars['Int']['input'];
+  published: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-export type JobsFilterInputs = {
-  company: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  location: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  status: InputMaybe<Array<InputMaybe<StatusEnum>>>;
-  title: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+export type Mutation = {
+  __typename: 'Mutation';
+  createRecipe: Recipe;
+  deleteRecipe: Scalars['Boolean']['output'];
+  favoriteRecipe: Scalars['Boolean']['output'];
+  unfavoriteRecipe: Scalars['Boolean']['output'];
+  updateRecipe: Recipe;
 };
 
-export type Note = {
-  __typename: 'Note';
-  content: Scalars['String']['output'];
-  id: Scalars['ID']['output'];
-  jobId: Scalars['ID']['output'];
-  timestamp: Scalars['String']['output'];
+
+export type MutationCreateRecipeArgs = {
+  input: CreateRecipeInput;
+};
+
+
+export type MutationDeleteRecipeArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationFavoriteRecipeArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUnfavoriteRecipeArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateRecipeArgs = {
+  id: Scalars['ID']['input'];
+  input: UpdateRecipeInput;
 };
 
 export type Query = {
   __typename: 'Query';
-  getJobs: Array<Job>;
+  myRecipes: Array<Recipe>;
+  mySavedRecipes: Array<Recipe>;
+  publishedRecipes: Array<Recipe>;
+  recipe: Maybe<Recipe>;
 };
 
 
-export type QueryGetJobsArgs = {
-  filters: InputMaybe<JobsFilterInputs>;
+export type QueryPublishedRecipesArgs = {
+  filters: InputMaybe<RecipesFilterInput>;
 };
 
-export type StatusChange = {
-  __typename: 'StatusChange';
-  date: Scalars['String']['output'];
-  status: StatusEnum;
+
+export type QueryRecipeArgs = {
+  id: Scalars['ID']['input'];
 };
 
-export type StatusEnum =
-  | 'APPLIED'
-  | 'ARCHIVED'
-  | 'CORRESPONDING'
-  | 'INTERVIEWING'
-  | 'OFFER_ACCEPTED'
-  | 'OFFER_RECEIVED'
-  | 'REJECTED'
-  | 'SAVED'
-  | 'STALE';
+export type Recipe = {
+  __typename: 'Recipe';
+  authorId: Scalars['ID']['output'];
+  authorUsername: Scalars['String']['output'];
+  cookTimeMinutes: Scalars['Int']['output'];
+  createdAt: Scalars['String']['output'];
+  directions: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  ingredients: Array<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  prepTimeMinutes: Scalars['Int']['output'];
+  published: Scalars['Boolean']['output'];
+};
+
+export type RecipesFilterInput = {
+  authorUsername: InputMaybe<Array<Scalars['String']['input']>>;
+  ingredient: InputMaybe<Array<Scalars['String']['input']>>;
+  maxCookTimeMinutes: InputMaybe<Scalars['Int']['input']>;
+  maxPrepTimeMinutes: InputMaybe<Scalars['Int']['input']>;
+  name: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+export type UpdateRecipeInput = {
+  cookTimeMinutes: InputMaybe<Scalars['Int']['input']>;
+  directions: InputMaybe<Scalars['String']['input']>;
+  ingredients: InputMaybe<Array<Scalars['String']['input']>>;
+  name: InputMaybe<Scalars['String']['input']>;
+  prepTimeMinutes: InputMaybe<Scalars['Int']['input']>;
+  published: InputMaybe<Scalars['Boolean']['input']>;
+};
 
 
 
@@ -146,64 +183,62 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  CreateRecipeInput: CreateRecipeInput;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
-  Job: ResolverTypeWrapper<Job>;
-  JobsFilterInputs: JobsFilterInputs;
-  Note: ResolverTypeWrapper<Note>;
+  Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
-  StatusChange: ResolverTypeWrapper<StatusChange>;
-  StatusEnum: StatusEnum;
+  Recipe: ResolverTypeWrapper<Recipe>;
+  RecipesFilterInput: RecipesFilterInput;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  UpdateRecipeInput: UpdateRecipeInput;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
+  CreateRecipeInput: CreateRecipeInput;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
-  Job: Job;
-  JobsFilterInputs: JobsFilterInputs;
-  Note: Note;
+  Mutation: Record<PropertyKey, never>;
   Query: Record<PropertyKey, never>;
-  StatusChange: StatusChange;
+  Recipe: Recipe;
+  RecipesFilterInput: RecipesFilterInput;
   String: Scalars['String']['output'];
+  UpdateRecipeInput: UpdateRecipeInput;
 };
 
-export type JobResolvers<ContextType = any, ParentType extends ResolversParentTypes['Job'] = ResolversParentTypes['Job']> = {
-  company: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  creationTime: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  description: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  listingDate: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  listingUrl: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  location: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  notes: Resolver<Array<ResolversTypes['Note']>, ParentType, ContextType>;
-  status: Resolver<ResolversTypes['StatusEnum'], ParentType, ContextType>;
-  statusHistory: Resolver<Array<ResolversTypes['StatusChange']>, ParentType, ContextType>;
-  title: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-};
-
-export type NoteResolvers<ContextType = any, ParentType extends ResolversParentTypes['Note'] = ResolversParentTypes['Note']> = {
-  content: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  jobId: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  timestamp: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createRecipe: Resolver<ResolversTypes['Recipe'], ParentType, ContextType, RequireFields<MutationCreateRecipeArgs, 'input'>>;
+  deleteRecipe: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteRecipeArgs, 'id'>>;
+  favoriteRecipe: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationFavoriteRecipeArgs, 'id'>>;
+  unfavoriteRecipe: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationUnfavoriteRecipeArgs, 'id'>>;
+  updateRecipe: Resolver<ResolversTypes['Recipe'], ParentType, ContextType, RequireFields<MutationUpdateRecipeArgs, 'id' | 'input'>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  getJobs: Resolver<Array<ResolversTypes['Job']>, ParentType, ContextType, QueryGetJobsArgs>;
+  myRecipes: Resolver<Array<ResolversTypes['Recipe']>, ParentType, ContextType>;
+  mySavedRecipes: Resolver<Array<ResolversTypes['Recipe']>, ParentType, ContextType>;
+  publishedRecipes: Resolver<Array<ResolversTypes['Recipe']>, ParentType, ContextType, QueryPublishedRecipesArgs>;
+  recipe: Resolver<Maybe<ResolversTypes['Recipe']>, ParentType, ContextType, RequireFields<QueryRecipeArgs, 'id'>>;
 };
 
-export type StatusChangeResolvers<ContextType = any, ParentType extends ResolversParentTypes['StatusChange'] = ResolversParentTypes['StatusChange']> = {
-  date: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  status: Resolver<ResolversTypes['StatusEnum'], ParentType, ContextType>;
+export type RecipeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Recipe'] = ResolversParentTypes['Recipe']> = {
+  authorId: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  authorUsername: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  cookTimeMinutes: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  createdAt: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  directions: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  ingredients: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  prepTimeMinutes: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  published: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {
-  Job: JobResolvers<ContextType>;
-  Note: NoteResolvers<ContextType>;
+  Mutation: MutationResolvers<ContextType>;
   Query: QueryResolvers<ContextType>;
-  StatusChange: StatusChangeResolvers<ContextType>;
+  Recipe: RecipeResolvers<ContextType>;
 };
 

@@ -1,50 +1,53 @@
 type Query {
-    # get all jobs for now, add filtering later
-    getJobs(filters: JobsFilterInputs): [Job!]!
+    publishedRecipes(filters: RecipesFilterInput): [Recipe!]!
+    recipe(id: ID!): Recipe
+    myRecipes: [Recipe!]!
+    mySavedRecipes: [Recipe!]!
 }
 
-input JobsFilterInputs {
-    title: [String]
-    company: [String]
-    location: [String]
-    status: [StatusEnum]
+type Mutation {
+    createRecipe(input: CreateRecipeInput!): Recipe!
+    updateRecipe(id: ID!, input: UpdateRecipeInput!): Recipe!
+    deleteRecipe(id: ID!): Boolean!
+    favoriteRecipe(id: ID!): Boolean!
+    unfavoriteRecipe(id: ID!): Boolean!
 }
 
+input RecipesFilterInput {
+    name: [String!]
+    maxPrepTimeMinutes: Int
+    maxCookTimeMinutes: Int
+    ingredient: [String!]
+    authorUsername: [String!]
+}
 
-type Job {
+type Recipe {
     id: ID!
-    creationTime: Int!
-    company: String!
-    title: String!
-    location: String!
-    listingUrl: String!
-    listingDate: Int!
-    description: String!
-    notes: [Note!]!
-    statusHistory: [StatusChange!]!
-    status: StatusEnum!
+    authorId: ID!
+    authorUsername: String!
+    name: String!
+    prepTimeMinutes: Int!
+    cookTimeMinutes: Int!
+    ingredients: [String!]!
+    directions: String!
+    published: Boolean!
+    createdAt: String!
 }
 
-type Note {
-    id: ID!
-    jobId: ID!
-    content: String!
-    timestamp: String!
+input CreateRecipeInput {
+    name: String!
+    prepTimeMinutes: Int!
+    cookTimeMinutes: Int!
+    ingredients: [String!]!
+    directions: String!
+    published: Boolean
 }
 
-enum StatusEnum {
-    SAVED
-    APPLIED
-    CORRESPONDING
-    INTERVIEWING
-    OFFER_RECEIVED
-    OFFER_ACCEPTED
-    REJECTED
-    STALE
-    ARCHIVED
-}
-
-type StatusChange {
-    date: String!
-    status: StatusEnum!
+input UpdateRecipeInput {
+    name: String
+    prepTimeMinutes: Int
+    cookTimeMinutes: Int
+    ingredients: [String!]
+    directions: String
+    published: Boolean
 }

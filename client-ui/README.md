@@ -1,15 +1,12 @@
 # client-ui
 
-To install dependencies:
+Recipe website UI (React, TanStack Router, Chakra, urql).
 
 ```bash
 bun install
-```
-
-To run:
-
-```bash
-bun run index.ts
+bun run dev
+bun run generate:routes
+bunx graphql-codegen --config codegen.ts
 ```
 
 ---
